@@ -41,7 +41,7 @@ namespace dateCalculator
         */
 
 
-        public static DateTime GetNewDate(string timeS, int timeI)
+        public static DateTime GetNewDateAdd(string timeS, int timeI)
         {
             DateTime newDate = new DateTime();
             DateTime now = GetCurrentDate();
@@ -66,18 +66,53 @@ namespace dateCalculator
         }
 
 
+        public static DateTime GetNewDateSub(string timeS, int timeI)
+        {
+            DateTime newDate = new DateTime();
+            DateTime now = GetCurrentDate();
+
+            switch (timeS)
+            {
+                case "day":
+                    newDate = now.AddDays(-timeI);
+                    break;
+                case "week":
+                    newDate = now.AddDays(-(timeI * 7));
+                    break;
+                case "month":
+                    newDate = now.AddMonths(-timeI);
+                    break;
+                case "year":
+                    newDate = now.AddYears(-timeI);
+                    break;
+            }
+
+            return newDate;
+        }
+
+
         static void Main(string[] args)
         {
             Console.WriteLine($"It is currently {GetCurrentDate():F}");
             string timeType;
             int quantity;
+            int result;
 
             Console.WriteLine("Enter a singular measurement of time (e.g week not weeks): ");
             timeType = Console.ReadLine();
             Console.WriteLine($"Enter the quantity of {timeType}s: ");
             quantity = int.Parse(Console.ReadLine());
+            Console.WriteLine($"Enter 1 (add {timeType}s) or 2 (subtract {timeType}s): ");
+            result = int.Parse(Console.ReadLine());
 
-            Console.WriteLine($"\n\nIn {quantity} {timeType}s, it will be {GetNewDate(timeType, quantity)}");
+            if (result == 1)
+            {
+                Console.WriteLine($"\n\nIn {quantity} {timeType}s, it will be {GetNewDateAdd(timeType, quantity)}");
+            }
+            else if (result == 2)
+            {
+                Console.WriteLine($"\n\n{quantity} {timeType}s ago, the date was {GetNewDateSub(timeType, quantity)}");
+            }
         }
     }
 }
