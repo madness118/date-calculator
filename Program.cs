@@ -52,7 +52,7 @@ namespace dateCalculator
                     newDate = now.AddDays(timeI);
                     break;
                 case "week":
-                    newDate = now.AddDays(timeI*7);
+                    newDate = now.AddDays(timeI * 7);
                     break;
                 case "month":
                     newDate = now.AddMonths(timeI);
