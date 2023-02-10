@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DateStuff;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,110 +9,55 @@ using System.Transactions;
 
 namespace dateCalculator
 {
+
     class Program
     {
         public static string[] keywords = { "day", "week", "month", "year" };
 
-
-        public static DateTime GetCurrentDate()
-        {
-            return DateTime.Now;
-        }
-
-        /*
-        public static Dictionary<int, string> CalculateTimeToAdd(string input) //calculate amount of time to add as a dictionary, separate two values in a different function
-        {
-            IDictionary<int, string> timeToAdd_dict = new Dictionary<int, string>();
-
-            int n;
-
-            for (int i = 0; i < keywords.Length; i++)
-                if (input.Contains(keywords[i]) == true)
-                {
-                    string[] strings = input.Split(' ');
-                    for (int j = 0; j < strings.Length; j+=2)
-                    {
-                        n = int.Parse(strings[j]);
-                        timeToAdd_dict.Add(n, strings[j+=1]);
-                    }
-                }
-
-            return (Dictionary<int, string>)timeToAdd_dict;
-        }
-        */
-
-
-        public static DateTime GetNewDateAdd(string timeS, int timeI)
-        {
-            DateTime newDate = new DateTime();
-            DateTime now = GetCurrentDate();
-
-            switch (timeS)
-            {
-                case "day":
-                    newDate = now.AddDays(timeI);
-                    break;
-                case "week":
-                    newDate = now.AddDays(timeI*7);
-                    break;
-                case "month":
-                    newDate = now.AddMonths(timeI);
-                    break;
-                case "year":
-                    newDate = now.AddYears(timeI);
-                    break;
-            }
-
-            return newDate;
-        }
-
-
-        public static DateTime GetNewDateSub(string timeS, int timeI)
-        {
-            DateTime newDate = new DateTime();
-            DateTime now = GetCurrentDate();
-
-            switch (timeS)
-            {
-                case "day":
-                    newDate = now.AddDays(-timeI);
-                    break;
-                case "week":
-                    newDate = now.AddDays(-(timeI * 7));
-                    break;
-                case "month":
-                    newDate = now.AddMonths(-timeI);
-                    break;
-                case "year":
-                    newDate = now.AddYears(-timeI);
-                    break;
-            }
-
-            return newDate;
-        }
-
-
         static void Main(string[] args)
         {
-            Console.WriteLine($"It is currently {GetCurrentDate():F}");
+            var myDateUtility = new DateUtility();
+            var readerWriterFactory = new ReaderWriterFactory();
+            var readerWriter = readerWriterFactory.Create(ReaderWriterType.Console);
+
+            readerWriter.WriteLine($"It is currently {myDateUtility.GetCurrentDate():F} \n\n");
             string timeType;
             int quantity;
             int result;
+            int userAction;
+            string compareDate;
 
-            Console.WriteLine("Enter a singular measurement of time (e.g week not weeks): ");
-            timeType = Console.ReadLine();
-            Console.WriteLine($"Enter the quantity of {timeType}s: ");
-            quantity = int.Parse(Console.ReadLine());
-            Console.WriteLine($"Enter 1 (add {timeType}s) or 2 (subtract {timeType}s): ");
-            result = int.Parse(Console.ReadLine());
-
-            if (result == 1)
+            readerWriter.WriteLine("Choose your action \n1) Calculate the date after a certain period of time\n2) Find difference between two dates  \nAnswer: ");
+            try
             {
-                Console.WriteLine($"\n\nIn {quantity} {timeType}s, it will be {GetNewDateAdd(timeType, quantity)}");
+                userAction = int.Parse(readerWriter.ReadLine());
+                if (userAction == 1)
+                {
+                    readerWriter.WriteLine("Enter a singular measurement of time (e.g week not weeks): ");
+                    timeType = readerWriter.ReadLine();
+                    readerWriter.WriteLine($"Enter the quantity of {timeType}s: ");
+                    quantity = int.Parse(readerWriter.ReadLine());
+                    readerWriter.WriteLine($"Enter 1 (add {timeType}s) or 2 (subtract {timeType}s): ");
+                    result = int.Parse(readerWriter.ReadLine());
+
+                    if (result == 1)
+                    {
+                        readerWriter.WriteLine($"\n\nIn {quantity} {timeType}s, it will be {myDateUtility.GetNewDateAdd(timeType, quantity)}");
+                    }
+                    else if (result == 2)
+                    {
+                        readerWriter.WriteLine($"\n\n{quantity} {timeType}s ago, the date was {myDateUtility.GetNewDateSubtract(timeType, quantity)}");
+                    }
+                }
+                else if (userAction == 2)
+                {
+                    readerWriter.WriteLine("Enter a date to compare in the form of: yyyy mm dd\nDate: ");
+                    compareDate = readerWriter.ReadLine();
+                }
             }
-            else if (result == 2)
+            catch
             {
-                Console.WriteLine($"\n\n{quantity} {timeType}s ago, the date was {GetNewDateSub(timeType, quantity)}");
+                readerWriter.WriteLine("Cannot accept, try again");
             }
         }
     }
